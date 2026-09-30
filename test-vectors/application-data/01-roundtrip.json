@@ -1,0 +1,28 @@
+{
+  "case": "application-data-roundtrip",
+  "schemas": [
+    {
+      "type_id": "alatyr.example.Project",
+      "version": 1,
+      "fields": [
+        { "id": "name", "type": "string", "required": true },
+        { "id": "owner", "type": "string", "required": false, "default": "unknown" }
+      ]
+    }
+  ],
+  "operations": [
+    { "op": "create", "type_id": "alatyr.example.Project", "persistent_id": "project-001" },
+    { "op": "set", "persistent_id": "project-001", "field": "name", "value": "Alatyr" },
+    { "op": "save", "persistent_id": "project-001" },
+    { "op": "load" }
+  ],
+  "expected": {
+    "loaded_type_id": "alatyr.example.Project",
+    "loaded_schema_version": 1,
+    "loaded_persistent_id": "project-001",
+    "fields": {
+      "name": "Alatyr",
+      "owner": "unknown"
+    }
+  }
+}

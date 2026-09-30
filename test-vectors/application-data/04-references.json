@@ -1,0 +1,25 @@
+{
+  "case": "reference-and-deletion-semantics",
+  "schemas": [
+    {
+      "type_id": "alatyr.example.Document",
+      "version": 1,
+      "fields": [
+        { "id": "title", "type": "string" },
+        { "id": "task", "type": "strong-reference", "required": false }
+      ]
+    }
+  ],
+  "operations": [
+    { "op": "create", "type_id": "alatyr.example.Task", "persistent_id": "task-001" },
+    { "op": "create", "type_id": "alatyr.example.Document", "persistent_id": "doc-001" },
+    { "op": "set-reference", "from": "doc-001", "field": "task", "to": "task-001" },
+    { "op": "destroy", "persistent_id": "task-001" },
+    { "op": "resolve-reference", "from": "doc-001", "field": "task" }
+  ],
+  "expected": {
+    "reference_result": "missing-reference",
+    "document_survives": true,
+    "destroyed_task_cannot_be_resolved": true
+  }
+}

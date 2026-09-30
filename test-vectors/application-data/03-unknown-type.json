@@ -1,0 +1,23 @@
+{
+  "case": "unknown-type-preservation",
+  "registered_types": [],
+  "input": {
+    "type_id": "external.plugin.Note",
+    "schema_version": 7,
+    "persistent_id": "note-001",
+    "payload": {
+      "text": "keep this data",
+      "plugin_value": 42
+    }
+  },
+  "operations": [
+    { "op": "load" },
+    { "op": "save", "persistent_id": "note-001" }
+  ],
+  "expected": {
+    "result": "opaque-preserved",
+    "type_id": "external.plugin.Note",
+    "schema_version": 7,
+    "payload_equal_to_input": true
+  }
+}

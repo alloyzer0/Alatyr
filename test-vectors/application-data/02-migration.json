@@ -1,0 +1,43 @@
+{
+  "case": "field-rename-and-default-migration",
+  "schemas": [
+    {
+      "type_id": "alatyr.example.Task",
+      "version": 1,
+      "fields": [
+        { "id": "title", "type": "string", "required": true },
+        { "id": "state", "type": "string", "default": "todo" }
+      ]
+    },
+    {
+      "type_id": "alatyr.example.Task",
+      "version": 2,
+      "fields": [
+        { "id": "title", "type": "string", "required": true },
+        { "id": "status", "type": "string", "default": "todo" },
+        { "id": "priority", "type": "integer", "default": 0 }
+      ],
+      "migrations": [
+        { "from": 1, "to": 2, "rename": { "state": "status" } }
+      ]
+    }
+  ],
+  "input": {
+    "type_id": "alatyr.example.Task",
+    "schema_version": 1,
+    "persistent_id": "task-001",
+    "payload": {
+      "title": "define protocol",
+      "state": "doing"
+    }
+  },
+  "expected": {
+    "schema_version": 2,
+    "payload": {
+      "title": "define protocol",
+      "status": "doing",
+      "priority": 0
+    },
+    "migration_is_repeatable": true
+  }
+}
