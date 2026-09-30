@@ -9,3 +9,4 @@
 - `schema.md`：类型、字段、版本和能力；
 - `persistence.md`：外部表示、迁移和未知类型；
 - `error-model.md`：结构化错误和失败结果。
+- `extension.md`：领域服务和适配器接入边界。

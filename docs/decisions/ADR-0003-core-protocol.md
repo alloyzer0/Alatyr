@@ -1,10 +1,10 @@
-# ADR-0003：跨领域可提炼的核心协议候选
+# ADR-0003：跨领域核心协议
 
-- 状态：Proposed
+- 状态：Accepted for M0
 - 日期：2026-10-01
 - 证据：application-data、physics-simulation 两个研究分支
 
-这份 ADR 只提出候选协议，不代表已经合并到 `master`。候选协议分为 Core、Data、Schema、Persistence 和 Extension 五层，避免把所有能力都称为 Core。
+这份 ADR 将两个领域研究分支中共同出现的语义收敛为 M0 协议。协议分为 Core、Data、Schema、Persistence 和 Extension 五层，避免把所有能力都称为 Core。它不决定具体语言、内存布局或生产实现。
 
 ## 1. Core：运行时身份和生命周期
 
@@ -70,7 +70,7 @@ external  由资源或外部系统解析，失败可诊断
 
 ## 3. Data：组件和查询协议
 
-这部分不是最小 Core，但已经被两个方向证明适合作为公共 Data 层候选。
+这部分不是最小 Core，但已经被两个方向证明适合作为 M0 公共 Data 层。
 
 ### 3.1 组件操作
 
@@ -171,9 +171,9 @@ register_adapter(domain, adapter)
 - 查询默认排序；
 - 某种编程语言的 trait、宏、comptime、GC 或 ABI。
 
-## 8. 回收 master 的建议条件
+## 8. M0 接受范围
 
-在两个领域的研究结果基础上，可以考虑把以下内容回收到 `master`：
+基于两个领域的研究结果，M0 接受以下公共协议：
 
 1. Core 身份、生命周期、引用和错误语义；
 2. Data 的 attach/detach/get/query 访问协议；
@@ -181,4 +181,4 @@ register_adapter(domain, adapter)
 4. Persistence envelope、迁移和未知类型处理；
 5. 对应的语言无关测试向量。
 
-具体实现、布局、动态属性策略和领域服务仍留在 reference implementation 或 Adapter。
+具体实现、布局、动态属性策略和领域服务仍留在 research 分支、reference implementation 或 Adapter。

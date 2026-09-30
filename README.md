@@ -1,87 +1,54 @@
 # Alatyr
 
-一个语言无关、可组合的对象与数据框架研究仓库。
+一个语言无关、可组合的对象与数据协议。
 
-## 命名约定
+Alatyr 不预设游戏引擎、编辑器、物理模拟或普通应用中的任何一种对象模型。它先定义跨领域成立的身份、生命周期、组件、Schema 和持久化语义，再由领域适配器提供具体能力。
 
-公共项目名和根命名空间使用完整的 `alatyr`。它比两字母缩写更容易保持唯一，也能让不同语言的实现保持一致：
+## Master 基线
+
+`master` 只保留：
+
+- 仓库说明和贡献规则；
+- 语言无关的协议描述；
+- 已接受的核心架构决策。
+
+当前协议分为：
 
 ```text
-Rust       crate / module: alatyr
-Zig        package / namespace: alatyr
-C++        namespace alatyr
-C#         Alatyr.*
+Core         身份、生命周期、引用、错误
+Data         组件和查询访问语义
+Schema       类型、字段、版本和约束
+Persistence  外部表示、迁移和未知类型
+Extension    领域服务和适配器边界
 ```
 
-只有在 C ABI、宏或生成符号等必须使用短前缀的地方，才使用 `al_`（宏使用 `AL_`）。不把 `ar` 作为主缩写，因为它与 augmented reality、array、archive 等常见含义冲突，而且无法自然对应 `Alatyr`。
-
-它暂时不面向某个具体领域。目标是先确定一组稳定的基础协议，再通过独立的应用示例验证这些协议能否服务于：
-
-- 普通应用的数据模型；
-- 游戏引擎编辑器；
-- 物理模拟和批量计算；
-- 资源处理、导入和构建工具；
-- 脚本、插件或动态扩展宿主。
-
-## 仓库原则
-
-`master` 只保留经过评估的通用基础协议和架构决策，不直接收纳某个领域的完整实现。
-
-领域实现优先作为独立示例、适配器或短期研究分支存在。只有被多个领域验证、且不依赖某个领域语义的内容，才回收到 `master`。
-
-语言实现暂不作为第一阶段决策。先用语言无关的接口、数据模型、测试场景和基准定义架构，再分别评估 Rust、Zig 或其他实现。
+实现、测试向量和领域研究保留在 `research/*` 分支，只有跨领域验证后才回收到 `master`。
 
 ## 目录
 
 ```text
-docs/
-  architecture/    架构草案、术语和模块边界
-  decisions/       ADR（架构决策记录）
-spec/               语言无关的 Core/Data/Schema/Persistence 协议
-examples/           面向具体领域的最小验证程序
+spec/                 语言无关的公共协议
+docs/decisions/       已接受的架构决策
+CONTRIBUTING.md       仓库变更和合并规则
 ```
 
-## 分支与合并规则
+领域研究的完整材料保留在对应的 `research/*` 分支，不属于当前 `master` 文件树。
 
-推荐使用以下分支类型：
+## 研究分支
 
 ```text
 master
-  ├── research/editor-inspector
-  ├── research/physics-simulation
   ├── research/application-data
-  └── research/resource-pipeline
+  ├── research/physics-simulation
+  └── research/<future-domain>
 ```
 
-- `master` 是稳定基线，不把它当作所有领域代码的集成分支；
-- `research/*` 用来验证领域假设，可以快速试错；
-- 研究分支只有在形成可复用协议、测试或明确 ADR 后才合并；
-- 不把领域特有的 `Transform`、场景树、物理约束或编辑器状态放进 Core；
-- 领域分支长期存在时，优先拆成 `examples/<domain>` 或独立仓库，避免分支永久漂移。
+研究分支用于验证领域假设。领域类型、存储布局、求解器索引、编辑器 UI、渲染、脚本和网络能力不能直接进入 Core。
 
-## 当前基线
+## 命名
 
-当前 `master` 是 `M0`：它包含文档、协议、决策记录、测试场景和仓库治理，不包含某个领域的完整实现。
+公共命名空间使用 `alatyr`。只有 C ABI、宏或生成符号使用 `al_` / `AL_`。
 
-下一阶段 `M1` 才实现最小可运行框架，稳定实现范围限定为：
+Rust、Zig、C++ 或其他语言的实现尚未决定。先以协议为准，再比较实现成本和运行时特性。
 
-```text
-Core / Data / Schema / Persistence
-```
-
-Tools 和 Adapters 在 M1 只提供接口和示例。渲染、物理、场景树、完整 ECS、脚本、网络、插件 ABI、编辑器 UI 和热重载都不进入当前基线。
-
-具体范围见 [master 分支与当前框架范围](docs/architecture/master-scope.md)、[模块地图](docs/architecture/module-map.md) 和 [M0/M1 决策记录](docs/decisions/ADR-0002-master-scope.md)。
-
-## 第一个阶段
-
-第一批产物包括：
-
-1. 术语表和边界；
-2. Core / Data / Schema / Persistence / Tools / Adapters 的模块草图；
-3. 身份、引用、生命周期和错误模型；
-4. Schema、未知类型和版本迁移策略；
-5. 至少两个领域的最小原型；
-6. 内存、遍历、序列化和构建裁剪基准。
-
-详见 [架构草案](docs/architecture/architecture-draft.md)、[协议草案](spec/README.md) 和 [ADR-0001](docs/decisions/ADR-0001-repository-and-baseline.md)。
+协议入口见 [spec/README.md](spec/README.md)，核心决策见 [ADR-0003](docs/decisions/ADR-0003-core-protocol.md)。
