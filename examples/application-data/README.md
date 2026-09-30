@@ -11,3 +11,11 @@
 - 对象引用和删除后的失效结果。
 
 具体语言实现和文件格式暂不在此 README 中决定。
+
+当前分支有一个临时向量执行器，可以运行：
+
+```bash
+python3 examples/application-data/reference_runner.py
+```
+
+它只验证协议语义，不代表最终的 Alatyr API，也不用于性能结论。
