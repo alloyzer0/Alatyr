@@ -8,6 +8,7 @@ from reference_model import (
     Migration,
     MissingReference,
     ObjectStore,
+    ObjectCentricComponentStore,
     PersistenceService,
     PropertyStore,
     Reference,
@@ -47,6 +48,15 @@ class ReferenceModelTests(unittest.TestCase):
         self.components.attach(second, "Tag", "normal")
 
         self.assertEqual(self.components.query(["Tag", "Counter"]), [first])
+
+    def test_alternative_component_layout_has_same_query_semantics(self) -> None:
+        first = self.objects.create("example.Task", "task-001")
+        second = self.objects.create("example.Task", "task-002")
+        store = ObjectCentricComponentStore(self.objects)
+        store.attach(first, "Tag", "important")
+        store.attach(first, "Counter", 1)
+        store.attach(second, "Tag", "normal")
+        self.assertEqual(store.query(["Tag", "Counter"]), [first])
 
     def test_roundtrip_uses_schema_defaults(self) -> None:
         self.schemas.register(

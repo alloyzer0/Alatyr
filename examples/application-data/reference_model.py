@@ -257,6 +257,43 @@ class ComponentStore:
         return sorted(candidates, key=lambda handle: (handle.slot, handle.generation))
 
 
+class ObjectCentricComponentStore:
+    """Alternative layout with the same access semantics as ComponentStore."""
+
+    def __init__(self, objects: ObjectStore) -> None:
+        self._objects = objects
+        self._values: dict[ObjectHandle, dict[str, Any]] = {}
+
+    def attach(self, handle: ObjectHandle, component_type: str, value: Any) -> None:
+        self._objects._slot(handle)
+        self._values.setdefault(handle, {})[component_type] = value
+
+    def get(self, handle: ObjectHandle, component_type: str) -> Any:
+        self._objects._slot(handle)
+        return self._values[handle][component_type]
+
+    def detach(self, handle: ObjectHandle, component_type: str) -> None:
+        values = self._values.get(handle)
+        if values is None:
+            return
+        values.pop(component_type, None)
+        if not values:
+            self._values.pop(handle, None)
+
+    def query(self, component_types: Iterable[str]) -> list[ObjectHandle]:
+        required = set(component_types)
+        if not required:
+            return []
+        return sorted(
+            [
+                handle
+                for handle, values in self._values.items()
+                if required.issubset(values)
+            ],
+            key=lambda handle: (handle.slot, handle.generation),
+        )
+
+
 @dataclass(frozen=True)
 class Envelope:
     type_id: TypeId
