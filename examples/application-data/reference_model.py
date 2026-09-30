@@ -39,6 +39,10 @@ class MissingReference(AlatyrError):
     pass
 
 
+class CorruptData(AlatyrError):
+    pass
+
+
 @dataclass(frozen=True)
 class ObjectHandle:
     slot: int
@@ -331,6 +335,20 @@ class Envelope:
             "payload": self.payload,
             "external_references": list(self.external_references),
         }
+
+    @classmethod
+    def from_dict(cls, raw: dict[str, Any]) -> "Envelope":
+        required = {"type_id", "schema_version", "persistent_id", "payload"}
+        missing = required - set(raw)
+        if missing or not isinstance(raw.get("payload"), dict):
+            raise CorruptData(f"invalid envelope, missing={sorted(missing)}")
+        return cls(
+            type_id=raw["type_id"],
+            schema_version=raw["schema_version"],
+            persistent_id=raw["persistent_id"],
+            payload=dict(raw["payload"]),
+            external_references=tuple(raw.get("external_references", [])),
+        )
 
 
 @dataclass(frozen=True)

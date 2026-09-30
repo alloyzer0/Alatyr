@@ -1,0 +1,13 @@
+{
+  "case": "corrupt-envelope-is-diagnosable",
+  "raw": {
+    "schema_version": 1,
+    "persistent_id": "broken-001",
+    "payload": []
+  },
+  "expected": {
+    "result": "corrupt-data",
+    "error": "CorruptData",
+    "object_created": false
+  }
+}

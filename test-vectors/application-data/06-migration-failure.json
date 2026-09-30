@@ -1,0 +1,31 @@
+{
+  "case": "migration-failure-is-diagnosable",
+  "schemas": [
+    {
+      "type_id": "alatyr.example.Task",
+      "version": 1,
+      "fields": [
+        { "id": "title", "type": "string" }
+      ]
+    },
+    {
+      "type_id": "alatyr.example.Task",
+      "version": 2,
+      "fields": [
+        { "id": "title", "type": "string" },
+        { "id": "status", "type": "string", "required": true }
+      ]
+    }
+  ],
+  "input": {
+    "type_id": "alatyr.example.Task",
+    "schema_version": 1,
+    "persistent_id": "task-001",
+    "payload": { "title": "cannot migrate" }
+  },
+  "expected": {
+    "result": "migration-failed",
+    "error": "SchemaMismatch",
+    "object_created": false
+  }
+}

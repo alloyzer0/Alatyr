@@ -19,3 +19,11 @@ python3 examples/application-data/reference_runner.py
 ```
 
 它只验证协议语义，不代表最终的 Alatyr API，也不用于性能结论。
+
+两种参考组件布局的探索性基准：
+
+```bash
+python3 examples/application-data/benchmark_stores.py
+```
+
+基准结果只用于比较同一环境下的趋势，不作为跨语言或生产性能承诺。

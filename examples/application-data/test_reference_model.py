@@ -2,6 +2,7 @@ import unittest
 
 from reference_model import (
     ComponentStore,
+    CorruptData,
     Envelope,
     FieldDesc,
     InvalidHandle,
@@ -14,6 +15,7 @@ from reference_model import (
     Reference,
     ReferenceResolver,
     SchemaRegistry,
+    SchemaMismatch,
     TypeDesc,
     World,
 )
@@ -148,6 +150,26 @@ class ReferenceModelTests(unittest.TestCase):
         self.objects.destroy(target)
         with self.assertRaises(MissingReference):
             resolver.resolve(Reference("strong", "task-001"))
+
+    def test_weak_reference_becomes_empty_after_destroy(self) -> None:
+        target = self.objects.create("example.Task", "task-001")
+        resolver = ReferenceResolver(self.objects)
+        self.assertEqual(resolver.resolve(Reference("weak", "task-001")), target)
+        self.objects.destroy(target)
+        self.assertIsNone(resolver.resolve(Reference("weak", "task-001")))
+
+    def test_migration_without_step_fails_before_object_creation(self) -> None:
+        self.schemas.register(TypeDesc("example.Task", 1, (FieldDesc("title", "string"),)))
+        self.schemas.register(TypeDesc("example.Task", 2, (FieldDesc("title", "string"),)))
+        with self.assertRaises(SchemaMismatch):
+            self.persistence.load(
+                Envelope("example.Task", 1, "task-001", {"title": "x"})
+            )
+        self.assertIsNone(self.objects.handle_for("task-001"))
+
+    def test_corrupt_envelope_is_rejected(self) -> None:
+        with self.assertRaises(CorruptData):
+            Envelope.from_dict({"schema_version": 1, "payload": []})
 
 
 if __name__ == "__main__":

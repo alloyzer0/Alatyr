@@ -126,12 +126,51 @@ def run_dynamic_fields(vector: dict[str, Any]) -> None:
     assert payload == vector["expected"]["payload"]
 
 
+def run_migration_failure(vector: dict[str, Any]) -> None:
+    source, target = vector["schemas"]
+    assert source["version"] < target["version"]
+    assert not target.get("migrations")
+    assert vector["expected"]["result"] == "migration-failed"
+    assert vector["expected"]["object_created"] is False
+
+
+def run_weak_reference(vector: dict[str, Any]) -> None:
+    alive = set()
+    before = None
+    after = None
+    for operation in vector["operations"]:
+        op = operation["op"]
+        if op == "create":
+            alive.add(operation["persistent_id"])
+        elif op == "destroy":
+            alive.discard(operation["persistent_id"])
+        elif op == "resolve":
+            result = "resolved" if operation["target"] in alive else "empty"
+            if before is None:
+                before = result
+            else:
+                after = result
+    assert before == vector["expected"]["before_destroy"]
+    assert after == vector["expected"]["after_destroy"]
+
+
+def run_corrupt_envelope(vector: dict[str, Any]) -> None:
+    raw = vector["raw"]
+    required = {"type_id", "schema_version", "persistent_id", "payload"}
+    assert not required.issubset(raw)
+    assert vector["expected"]["result"] == "corrupt-data"
+    assert vector["expected"]["object_created"] is False
+
+
 RUNNERS = {
     "application-data-roundtrip": run_roundtrip,
     "field-rename-and-default-migration": run_migration,
     "unknown-type-preservation": run_unknown_type,
     "reference-and-deletion-semantics": run_references,
     "dynamic-fields-preservation": run_dynamic_fields,
+    "migration-failure-is-diagnosable": run_migration_failure,
+    "weak-reference-becomes-empty": run_weak_reference,
+    "corrupt-envelope-is-diagnosable": run_corrupt_envelope,
 }
 
 

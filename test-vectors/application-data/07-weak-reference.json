@@ -1,0 +1,13 @@
+{
+  "case": "weak-reference-becomes-empty",
+  "operations": [
+    { "op": "create", "type_id": "alatyr.example.Task", "persistent_id": "task-001" },
+    { "op": "resolve", "kind": "weak", "target": "task-001" },
+    { "op": "destroy", "persistent_id": "task-001" },
+    { "op": "resolve", "kind": "weak", "target": "task-001" }
+  ],
+  "expected": {
+    "before_destroy": "resolved",
+    "after_destroy": "empty"
+  }
+}
