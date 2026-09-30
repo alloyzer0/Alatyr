@@ -1,6 +1,19 @@
-# Object Framework
+# Alatyr
 
 一个语言无关、可组合的对象与数据框架研究仓库。
+
+## 命名约定
+
+公共项目名和根命名空间使用完整的 `alatyr`。它比两字母缩写更容易保持唯一，也能让不同语言的实现保持一致：
+
+```text
+Rust       crate / module: alatyr
+Zig        package / namespace: alatyr
+C++        namespace alatyr
+C#         Alatyr.*
+```
+
+只有在 C ABI、宏或生成符号等必须使用短前缀的地方，才使用 `al_`（宏使用 `AL_`）。不把 `ar` 作为主缩写，因为它与 augmented reality、array、archive 等常见含义冲突，而且无法自然对应 `Alatyr`。
 
 它暂时不面向某个具体领域。目标是先确定一组稳定的基础协议，再通过独立的应用示例验证这些协议能否服务于：
 
