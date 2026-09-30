@@ -19,7 +19,7 @@ TypeId        类型注册和 Schema 查找的身份
 三者职责不同：
 
 - `ObjectHandle` 可以失效，不能作为持久化身份；
-- `PersistentId` 可以跨进程存在，不能保证对象当前存活；
+- `PersistentId` 可以跨进程存在，不能保证对象当前存活；瞬时对象可以没有 PersistentId；
 - `TypeId` 描述类型，不代表某个实例。
 
 ### 1.2 生命周期
