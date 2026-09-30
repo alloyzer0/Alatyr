@@ -1,0 +1,16 @@
+{
+  "case": "component-removal-changes-query",
+  "objects": [
+    { "persistent_id": "body-001", "components": { "Transform": { "x": 0, "y": 0 }, "Velocity": { "x": 1, "y": 0 } } },
+    { "persistent_id": "body-002", "components": { "Transform": { "x": 2, "y": 0 }, "Velocity": { "x": 0, "y": 2 } } }
+  ],
+  "operations": [
+    { "op": "query", "requires": ["Transform", "Velocity"] },
+    { "op": "detach", "persistent_id": "body-001", "component": "Velocity" },
+    { "op": "query", "requires": ["Transform", "Velocity"] }
+  ],
+  "expected": {
+    "before": ["body-001", "body-002"],
+    "after": ["body-002"]
+  }
+}

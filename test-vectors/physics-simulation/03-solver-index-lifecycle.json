@@ -1,0 +1,15 @@
+{
+  "case": "solver-index-is-not-object-identity",
+  "operations": [
+    { "op": "create", "persistent_id": "body-001" },
+    { "op": "bind_solver_index", "persistent_id": "body-001", "solver_index": 0 },
+    { "op": "destroy", "persistent_id": "body-001" },
+    { "op": "create", "persistent_id": "body-002" },
+    { "op": "bind_solver_index", "persistent_id": "body-002", "solver_index": 0 }
+  ],
+  "expected": {
+    "body-001_handle_is_invalid": true,
+    "body-002_may_reuse_solver_index": true,
+    "persistent_ids_are_distinct": true
+  }
+}

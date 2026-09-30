@@ -1,0 +1,20 @@
+{
+  "case": "batch-query-and-update",
+  "objects": [
+    { "persistent_id": "body-001", "components": { "Transform": { "x": 0, "y": 0 }, "Velocity": { "x": 1, "y": 0 } } },
+    { "persistent_id": "body-002", "components": { "Transform": { "x": 2, "y": 0 }, "Velocity": { "x": 0, "y": 2 } } },
+    { "persistent_id": "body-003", "components": { "Transform": { "x": 5, "y": 5 } } }
+  ],
+  "operations": [
+    { "op": "query", "requires": ["Transform", "Velocity"] },
+    { "op": "integrate", "dt": 1.0 }
+  ],
+  "expected": {
+    "query_ids": ["body-001", "body-002"],
+    "transforms": {
+      "body-001": { "x": 1, "y": 0 },
+      "body-002": { "x": 2, "y": 2 }
+    },
+    "body-003_unchanged": true
+  }
+}
