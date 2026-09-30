@@ -115,11 +115,23 @@ def run_references(vector: dict[str, Any]) -> None:
     assert document_survives == expected["document_survives"]
 
 
+def run_dynamic_fields(vector: dict[str, Any]) -> None:
+    schema = vector["schemas"][0]
+    payload = dict(vector["input"]["payload"])
+    known_fields = {field["id"] for field in schema["fields"]}
+    dynamic = {key: value for key, value in payload.items() if key not in known_fields}
+    assert schema["allow_dynamic_fields"] is True
+    assert dynamic
+    assert vector["expected"]["dynamic_fields_preserved"] is True
+    assert payload == vector["expected"]["payload"]
+
+
 RUNNERS = {
     "application-data-roundtrip": run_roundtrip,
     "field-rename-and-default-migration": run_migration,
     "unknown-type-preservation": run_unknown_type,
     "reference-and-deletion-semantics": run_references,
+    "dynamic-fields-preservation": run_dynamic_fields,
 }
 
 

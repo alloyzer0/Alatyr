@@ -15,6 +15,7 @@ from reference_model import (
     ReferenceResolver,
     SchemaRegistry,
     TypeDesc,
+    World,
 )
 
 
@@ -57,6 +58,16 @@ class ReferenceModelTests(unittest.TestCase):
         store.attach(first, "Counter", 1)
         store.attach(second, "Tag", "normal")
         self.assertEqual(store.query(["Tag", "Counter"]), [first])
+
+    def test_world_coordinates_optional_store_cleanup(self) -> None:
+        world = World()
+        handle = world.objects.create("example.Task", "task-001")
+        world.properties.set(handle, "title", "temporary")
+        world.components.attach(handle, "Tag", "temporary")
+        world.destroy(handle)
+        self.assertFalse(world.objects.is_alive(handle))
+        self.assertNotIn(handle, world.components._values.get("Tag", {}))
+        self.assertNotIn(handle, world.properties._values)
 
     def test_roundtrip_uses_schema_defaults(self) -> None:
         self.schemas.register(
@@ -104,6 +115,23 @@ class ReferenceModelTests(unittest.TestCase):
         self.assertEqual(version, 2)
         self.assertEqual(repeated_version, version)
         self.assertEqual(repeated, migrated)
+
+    def test_dynamic_fields_are_preserved_only_when_schema_allows_them(self) -> None:
+        self.schemas.register(
+            TypeDesc(
+                "example.Document",
+                1,
+                (FieldDesc("title", "string", required=True),),
+                allow_dynamic_fields=True,
+            )
+        )
+        version, payload = self.schemas.migrate(
+            "example.Document",
+            1,
+            {"title": "research", "custom_color": "blue"},
+        )
+        self.assertEqual(version, 1)
+        self.assertEqual(payload["custom_color"], "blue")
 
     def test_unknown_type_is_opaque(self) -> None:
         envelope = self.persistence.load(

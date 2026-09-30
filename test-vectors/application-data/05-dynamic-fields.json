@@ -1,0 +1,31 @@
+{
+  "case": "dynamic-fields-preservation",
+  "schemas": [
+    {
+      "type_id": "alatyr.example.Document",
+      "version": 1,
+      "allow_dynamic_fields": true,
+      "fields": [
+        { "id": "title", "type": "string", "required": true }
+      ]
+    }
+  ],
+  "input": {
+    "type_id": "alatyr.example.Document",
+    "schema_version": 1,
+    "persistent_id": "doc-001",
+    "payload": {
+      "title": "research",
+      "custom_color": "blue",
+      "plugin_value": 42
+    }
+  },
+  "expected": {
+    "dynamic_fields_preserved": true,
+    "payload": {
+      "title": "research",
+      "custom_color": "blue",
+      "plugin_value": 42
+    }
+  }
+}

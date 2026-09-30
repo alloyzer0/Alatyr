@@ -256,6 +256,10 @@ class ComponentStore:
             candidates.intersection_update(self._values.get(component_type, {}))
         return sorted(candidates, key=lambda handle: (handle.slot, handle.generation))
 
+    def remove_entity(self, handle: ObjectHandle) -> None:
+        for values in self._values.values():
+            values.pop(handle, None)
+
 
 class ObjectCentricComponentStore:
     """Alternative layout with the same access semantics as ComponentStore."""
@@ -292,6 +296,23 @@ class ObjectCentricComponentStore:
             ],
             key=lambda handle: (handle.slot, handle.generation),
         )
+
+    def remove_entity(self, handle: ObjectHandle) -> None:
+        self._values.pop(handle, None)
+
+
+class World:
+    """Candidate lifecycle coordinator for the reference model."""
+
+    def __init__(self) -> None:
+        self.objects = ObjectStore()
+        self.properties = PropertyStore(self.objects)
+        self.components = ComponentStore(self.objects)
+
+    def destroy(self, handle: ObjectHandle) -> None:
+        self.properties.remove(handle)
+        self.components.remove_entity(handle)
+        self.objects.destroy(handle)
 
 
 @dataclass(frozen=True)

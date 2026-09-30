@@ -9,12 +9,14 @@
 - 未注册类型可以作为完整 opaque envelope 保留；
 - strong reference 在目标删除后返回 MissingReference；
 - 组件查询不要求组件存储采用某一种布局。
+- 动态字段可以在 Schema 明确允许时保留，固定 Schema 默认拒绝未知字段；
+- 用一个 `World` 协调者可以在删除对象时清理属性和组件存储。
 
 ## 暴露出的协议问题
 
 ### 删除的协调者
 
-当前参考模型中，ObjectStore、PropertyStore 和 ComponentStore 是独立对象。删除 Object 后，调用方必须显式清理组件和属性。需要决定：
+当前参考模型中，ObjectStore、PropertyStore 和 ComponentStore 是独立对象。直接删除 Object 后，调用方必须显式清理组件和属性。研究实现增加了一个 `World` 协调者作为候选方案，但仍需决定：
 
 - 由 `World` 或 `ObjectRuntime` 作为生命周期协调者；
 - 由 Store 订阅 destroy 事件；
@@ -34,7 +36,7 @@
 
 ### 动态字段的范围
 
-当前 Schema 可以声明动态字段，但还没有定义字段 ID、值类型标签、默认值和未知字段保留方式。下一轮不能直接使用通用字符串字典，而应先增加向量。
+当前 Schema 可以声明动态字段，并在允许时保留未知键。仍没有定义字段 ID、值类型标签、默认值和插件字段命名空间。下一轮不能直接使用无边界的全局字符串字典。
 
 ## 暂不下结论
 
