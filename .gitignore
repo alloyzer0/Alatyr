@@ -9,6 +9,8 @@ dist/
 .DS_Store
 .idea/
 .vscode/
+__pycache__/
+*.pyc
 
 # Local benchmark results
 benchmarks/results/
