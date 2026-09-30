@@ -37,6 +37,7 @@ C#         Alatyr.*
 docs/
   architecture/    架构草案、术语和模块边界
   decisions/       ADR（架构决策记录）
+spec/               语言无关的 Core/Data/Schema/Persistence 协议
 examples/           面向具体领域的最小验证程序
 ```
 
@@ -58,9 +59,23 @@ master
 - 不把领域特有的 `Transform`、场景树、物理约束或编辑器状态放进 Core；
 - 领域分支长期存在时，优先拆成 `examples/<domain>` 或独立仓库，避免分支永久漂移。
 
+## 当前基线
+
+当前 `master` 是 `M0`：它包含文档、协议、决策记录、测试场景和仓库治理，不包含某个领域的完整实现。
+
+下一阶段 `M1` 才实现最小可运行框架，稳定实现范围限定为：
+
+```text
+Core / Data / Schema / Persistence
+```
+
+Tools 和 Adapters 在 M1 只提供接口和示例。渲染、物理、场景树、完整 ECS、脚本、网络、插件 ABI、编辑器 UI 和热重载都不进入当前基线。
+
+具体范围见 [master 分支与当前框架范围](docs/architecture/master-scope.md)、[模块地图](docs/architecture/module-map.md) 和 [M0/M1 决策记录](docs/decisions/ADR-0002-master-scope.md)。
+
 ## 第一个阶段
 
-当前阶段只做架构研究，不做完整产品。第一批产物应包括：
+第一批产物包括：
 
 1. 术语表和边界；
 2. Core / Data / Schema / Persistence / Tools / Adapters 的模块草图；
@@ -69,4 +84,4 @@ master
 5. 至少两个领域的最小原型；
 6. 内存、遍历、序列化和构建裁剪基准。
 
-详见 [架构草案](docs/architecture/architecture-draft.md) 和 [ADR-0001](docs/decisions/ADR-0001-repository-and-baseline.md)。
+详见 [架构草案](docs/architecture/architecture-draft.md)、[协议草案](spec/README.md) 和 [ADR-0001](docs/decisions/ADR-0001-repository-and-baseline.md)。

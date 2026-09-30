@@ -1,0 +1,14 @@
+# Local build output
+build/
+target/
+zig-out/
+zig-cache/
+dist/
+
+# IDE and OS files
+.DS_Store
+.idea/
+.vscode/
+
+# Local benchmark results
+benchmarks/results/
